@@ -6,9 +6,8 @@ phases:
       - mvn clean install
       - echo Logging in to Amazon ECR...
       - aws --version
-      - REPOSITORY_URI= public.ecr.aws/b7o5o8n6/aug-3-prince-repo
-      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/b7o5o8n6
-      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - REPOSITORY_URI= 014498631160.dkr.ecr.ap-south-1.amazonaws.com/thisa-private
+      - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin $REPOSITORY_URI
       - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
   build:
     commands:
@@ -26,7 +25,7 @@ phases:
       - printf '[{"name":"bootdocker","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
       - echo Writing image definitions file...
       # add your container name ie. ECR repository name which is also known as 
-      - DOCKER_CONTAINER_NAME=aug-3-prince-repo      
+      - DOCKER_CONTAINER_NAME= bootdocker   
       - printf '[{"name":"%s","imageUri":"%s"}]' $DOCKER_CONTAINER_NAME $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
       - echo $DOCKER_CONTAINER_NAME
       - echo printing imagedefinitions.json
